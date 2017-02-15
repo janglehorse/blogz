@@ -19,9 +19,13 @@ class BlogHandler(webapp2.RequestHandler):
             Get all posts by a specific user, ordered by creation date (descending).
             The user parameter will be a User object.
         """
-
         # TODO - filter the query so that only posts by the given user
-        return None
+        user_id = user.key()
+
+        return Post.all().filter('author', user_id).order('-created').fetch(limit=limit, offset=offset)
+
+    #TODO - write a get_user_by_post() that takes a post object and returns the username of the author
+
 
     def get_user_by_name(self, username):
         """ Get a user object from the db, based on their username """
@@ -92,6 +96,7 @@ class BlogIndexHandler(BlogHandler):
             posts = self.get_posts_by_user(user, self.page_size, offset)
         else:
             posts = self.get_posts(self.page_size, offset)
+
 
         # determine next/prev page numbers for navigation links
         if page > 1:
